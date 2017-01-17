@@ -3,13 +3,7 @@ function love.load()
   ball.x = 400
   ball.y = 300
   ball.radius = 20
-  if math.random(10)%2 == 0 then
-    ball.xSpeed = 100
-    ball.ySpeed = 100
-  else
-    ball.xSpeed = -100
-    ball.ySpeed = -100
-  end
+  resetBall(ball)
 
   paddleLeft = {}
   paddleLeft.x = 0
@@ -119,13 +113,7 @@ function love.keyreleased(key)
   if key == "return" then
     if meta.winner then
       meta.winner = nil
-      if math.random(10)%2 == 0 then
-        ball.xSpeed = 100
-        ball.ySpeed = 100
-      else
-        ball.xSpeed = -100
-        ball.ySpeed = -100
-      end
+      resetBall(ball)
     end
   end
 end
@@ -141,3 +129,16 @@ function checkCollision(ball, paddle)
            ball.y + ball.radius <= paddle.y + paddle.height)
 end
 
+function resetBall(ball)
+  if math.random(10)%2 == 0 then
+    ball.xSpeed = 100
+  else
+    ball.xSpeed = -100
+  end
+
+  if math.random(10)%2 == 0 then
+    ball.ySpeed = 100
+  else
+    ball.ySpeed = -100
+  end
+end
