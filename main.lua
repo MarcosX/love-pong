@@ -3,7 +3,7 @@ function love.load()
   ball.x = 400
   ball.y = 300
   ball.radius = 20
-  resetBall(ball)
+  resetBallWithSpeed(ball)
 
   paddleLeft = {}
   paddleLeft.x = 0
@@ -20,27 +20,31 @@ function love.load()
   meta = {}
   meta.scoreRight = 0
   meta.scoreLeft = 0
+  meta.winScore = 1
+
+  math.randomseed( os.time() )
 end
 
 function love.update(dt)
   meta.dt = dt
 
   if (ball.x - ball.radius <= 0) then
-    meta.winner = 'Player on the right wins!'
+    resetBallWithSpeed(ball)
     meta.scoreRight = meta.scoreRight + 1
-    ball.xSpeed = 0
-    ball.ySpeed = 0
-    ball.x = 400
-    ball.y = 300
   end
 
   if (ball.x + ball.radius >= love.graphics.getWidth()) then
-    ball.xSpeed = 0
-    ball.ySpeed = 0
-    ball.x = 400
-    ball.y = 300
+    resetBallWithSpeed(ball)
     meta.scoreLeft = meta.scoreLeft + 1
+  end
+
+  if (meta.scoreRight >= meta.winScore) then
+    meta.winner = 'Player on the right wins!'
+    resetBallWithoutSpeed(ball)
+  end
+  if (meta.scoreLeft >= meta.winScore) then
     meta.winner = 'Player on the left wins!'
+    resetBallWithoutSpeed(ball)
   end
 
   if (ball.y - ball.radius <= 0) then
@@ -96,8 +100,8 @@ function love.draw()
 
   love.graphics.rectangle("fill", paddleRight.x, paddleRight.y, paddleRight.width, paddleRight.height)
 
-  love.graphics.print(meta.scoreRight, 40, 10)
-  love.graphics.print(meta.scoreLeft, 760, 10)
+  love.graphics.print(meta.scoreRight, 760, 10)
+  love.graphics.print(meta.scoreLeft, 40, 10)
 --  love.graphics.print(meta.dt, 600, 20)
   if (meta.winner) then
     love.graphics.print(meta.winner, 350, 100)
@@ -112,10 +116,16 @@ function love.keyreleased(key)
 
   if key == "return" then
     if meta.winner then
-      meta.winner = nil
-      resetBall(ball)
+      resetGame(meta)
+      resetBallWithSpeed(ball)
     end
   end
+end
+
+function resetGame(meta)
+  meta.winner = nil
+  meta.scoreLeft = 0
+  meta.scoreRight = 0
 end
 
 function checkCollision(ball, paddle)
@@ -126,7 +136,10 @@ function checkCollision(ball, paddle)
   return verticalCollision and horizontalCollision
 end
 
-function resetBall(ball)
+function resetBallWithSpeed(ball)
+  ball.x = 400
+  ball.y = 300
+
   if math.random(10)%2 == 0 then
     ball.xSpeed = 100
   else
@@ -138,4 +151,11 @@ function resetBall(ball)
   else
     ball.ySpeed = -100
   end
+end
+
+function resetBallWithoutSpeed(ball)
+  ball.x = 400
+  ball.y = 300
+  ball.xSpeed = 0
+  ball.ySpeed = 0
 end
