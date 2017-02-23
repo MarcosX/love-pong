@@ -7,13 +7,13 @@ function love.load()
 
   paddleLeft = {}
   paddleLeft.x = 0
-  paddleLeft.y = 0
+  paddleLeft.y = 250
   paddleLeft.width = 20
   paddleLeft.height = 100
 
   paddleRight = {}
   paddleRight.x = 780
-  paddleRight.y = 500
+  paddleRight.y = 250
   paddleRight.width = 20
   paddleRight.height = 100
 
@@ -119,14 +119,11 @@ function love.keyreleased(key)
 end
 
 function checkCollision(ball, paddle)
-  return (ball.x + ball.radius >= paddle.x and
-           ball.x + ball.radius <= paddle.x + paddle.width and
-           ball.y - ball.radius >= paddle.y and
-           ball.y + ball.radius <= paddle.y + paddle.height) or
-         (ball.x - ball.radius <= paddle.x + paddle.width and
-           ball.x - ball.radius >= paddle.x and
-           ball.y - ball.radius >= paddle.y and
-           ball.y + ball.radius <= paddle.y + paddle.height)
+  verticalCollision = ((ball.y - ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height) or
+                        ((ball.y + ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height)
+  horizontalCollision = ((ball.x - ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width) or
+                        ((ball.x + ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width)
+  return verticalCollision and horizontalCollision
 end
 
 function resetBall(ball)
