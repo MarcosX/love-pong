@@ -13,12 +13,16 @@ function love.load()
   paddleLeft.x = 0
   paddleLeft.y = 250
   paddleLeft.width = 20
+  paddleLeft.ySpeed = 100
+  paddleLeft.ballHitCount = 0
   paddleLeft.height = meta.initialPaddleHeight
 
   paddleRight = {}
   paddleRight.x = 780
   paddleRight.y = 250
   paddleRight.width = 20
+  paddleRight.ySpeed = 100
+  paddleRight.ballHitCount = 0
   paddleRight.height = meta.initialPaddleHeight
 end
 
@@ -28,12 +32,14 @@ function love.update(dt)
       resetBallWithSpeed(ball)
       meta.scoreRight = meta.scoreRight + 1
       paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty
+      paddleLeft.ballHitCount = 0
     end
 
     if (ball.x + ball.radius >= love.graphics.getWidth()) then
       resetBallWithSpeed(ball)
       meta.scoreLeft = meta.scoreLeft + 1
       paddleRight.height = paddleRight.height - meta.goalHeightPenalty
+      paddleRight.ballHitCount = 0
     end
 
     if (meta.scoreRight >= meta.winScore) then
@@ -47,18 +53,24 @@ function love.update(dt)
 
     if (ball.y - ball.radius <= 0) then
       ball.ySpeed = ball.ySpeed * -1.1
+      ball.hitCount = ball.hitCount + 1
     end
     if (ball.y + ball.radius >= love.graphics.getHeight()) then
       ball.ySpeed = ball.ySpeed * -1.1
+      ball.hitCount = ball.hitCount + 1
     end
 
     if (checkCollision(ball, paddleRight)) then
       ball.xSpeed = ball.xSpeed * -1.1
       paddleRight.height = paddleRight.height + meta.hitHeightBonus
+      paddleRight.ballHitCount = paddleRight.ballHitCount + 1
+      ball.hitCount = ball.hitCount + 1
     end
     if (checkCollision(ball, paddleLeft)) then
       ball.xSpeed = ball.xSpeed * -1.1
       paddleLeft.height = paddleLeft.height + meta.hitHeightBonus
+      paddleLeft.ballHitCount = paddleLeft.ballHitCount + 1
+      ball.hitCount = ball.hitCount + 1
     end
 
     ball.x = ball.x + ball.xSpeed*dt
@@ -66,25 +78,25 @@ function love.update(dt)
   end
 
   if (love.keyboard.isDown("w")) then
-    paddleLeft.y = paddleLeft.y - dt*100
+    paddleLeft.y = paddleLeft.y - dt*paddleLeft.ySpeed
   end
 
   if (love.keyboard.isDown("s")) then
-    paddleLeft.y = paddleLeft.y + dt*100
+    paddleLeft.y = paddleLeft.y + dt*paddleLeft.ySpeed
   end
 
   if (love.keyboard.isDown("up")) then
-    paddleRight.y = paddleRight.y - dt*100
+    paddleRight.y = paddleRight.y - dt*paddleRight.ySpeed
   end
 
   if (love.keyboard.isDown("down")) then
-    paddleRight.y = paddleRight.y + dt*100
+    paddleRight.y = paddleRight.y + dt*paddleRight.ySpeed
   end
 end
 
 function love.draw()
   for i, ball in pairs(balls) do
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(255, 255 - ball.hitCount * 10, 255 - ball.hitCount * 10)
     love.graphics.circle("fill", ball.x, ball.y, ball.radius, 20)
   end
 
@@ -95,6 +107,9 @@ function love.draw()
 
   love.graphics.print(meta.scoreRight, 760, 10)
   love.graphics.print(meta.scoreLeft, 40, 10)
+
+--  love.graphics.print(paddleLeft.ballHitCount, paddleLeft.x + paddleLeft.width + 10, paddleLeft.y)
+--  love.graphics.print(paddleRight.ballHitCount, paddleRight.x - paddleRight.width + 10, paddleRight.y)
 
   if (meta.winner) then
     love.graphics.print(meta.winner, 350, 100)
@@ -135,6 +150,7 @@ function checkCollision(ball, paddle)
 end
 
 function resetBallWithSpeed(ball)
+  ball.hitCount = 0
   ball.x = 375 + love.math.random(50)
   ball.y = 275 + love.math.random(50)
 
@@ -156,6 +172,7 @@ function resetBallWithoutSpeed(ball)
   ball.y = 300
   ball.xSpeed = 0
   ball.ySpeed = 0
+  ball.hitCount = 0
 end
 
 function createBallWithSpeed()
@@ -163,6 +180,7 @@ function createBallWithSpeed()
   ball.x = 400
   ball.y = 300
   ball.radius = 20
+  ball.hitCount = 0
   resetBallWithSpeed(ball)
   return ball
 end
