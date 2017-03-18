@@ -23,8 +23,6 @@ function love.load()
 end
 
 function love.update(dt)
-  meta.dt = dt
-
   for i, ball in pairs(balls) do
     if (ball.x - ball.radius <= 0) then
       resetBallWithSpeed(ball)
@@ -97,7 +95,7 @@ function love.draw()
 
   love.graphics.print(meta.scoreRight, 760, 10)
   love.graphics.print(meta.scoreLeft, 40, 10)
---  love.graphics.print(meta.dt, 600, 20)
+
   if (meta.winner) then
     love.graphics.print(meta.winner, 350, 100)
     love.graphics.print('Press esc to quit or enter to restart' , 300, 400)
