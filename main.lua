@@ -1,22 +1,25 @@
 function love.load()
   balls = { createBallWithSpeed(), createBallWithSpeed() }
 
+  meta = {}
+  meta.scoreRight = 0
+  meta.scoreLeft = 0
+  meta.winScore = 5
+  meta.initialPaddleHeight = 100
+  meta.goalHeightPenalty = 10
+  meta.hitHeightBonus = 5
+
   paddleLeft = {}
   paddleLeft.x = 0
   paddleLeft.y = 250
   paddleLeft.width = 20
-  paddleLeft.height = 100
+  paddleLeft.height = meta.initialPaddleHeight
 
   paddleRight = {}
   paddleRight.x = 780
   paddleRight.y = 250
   paddleRight.width = 20
-  paddleRight.height = 100
-
-  meta = {}
-  meta.scoreRight = 0
-  meta.scoreLeft = 0
-  meta.winScore = 5
+  paddleRight.height = meta.initialPaddleHeight
 end
 
 function love.update(dt)
@@ -26,11 +29,13 @@ function love.update(dt)
     if (ball.x - ball.radius <= 0) then
       resetBallWithSpeed(ball)
       meta.scoreRight = meta.scoreRight + 1
+      paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty
     end
 
     if (ball.x + ball.radius >= love.graphics.getWidth()) then
       resetBallWithSpeed(ball)
       meta.scoreLeft = meta.scoreLeft + 1
+      paddleRight.height = paddleRight.height - meta.goalHeightPenalty
     end
 
     if (meta.scoreRight >= meta.winScore) then
@@ -48,9 +53,14 @@ function love.update(dt)
     if (ball.y + ball.radius >= love.graphics.getHeight()) then
       ball.ySpeed = ball.ySpeed * -1.1
     end
-    if (checkCollision(ball, paddleRight) or
-      checkCollision(ball, paddleLeft)) then
+
+    if (checkCollision(ball, paddleRight)) then
       ball.xSpeed = ball.xSpeed * -1.1
+      paddleRight.height = paddleRight.height + meta.hitHeightBonus
+    end
+    if (checkCollision(ball, paddleLeft)) then
+      ball.xSpeed = ball.xSpeed * -1.1
+      paddleLeft.height = paddleLeft.height + meta.hitHeightBonus
     end
 
     ball.x = ball.x + ball.xSpeed*dt
@@ -126,6 +136,9 @@ function resetGame(meta)
   meta.winner = nil
   meta.scoreLeft = 0
   meta.scoreRight = 0
+
+  paddleLeft.height = meta.initialPaddleHeight
+  paddleRight.height = meta.initialPaddleHeight
 end
 
 function checkCollision(ball, paddle)
