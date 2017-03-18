@@ -126,7 +126,9 @@ function love.keyreleased(key)
   if key == "return" then
     if meta.winner then
       resetGame(meta)
-      balls = {}
+      for i, ball in pairs(balls) do
+        resetBallWithSpeed(ball)
+      end
     end
   end
 end
