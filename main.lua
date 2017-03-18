@@ -88,19 +88,6 @@ function love.draw()
   for i, ball in pairs(balls) do
     love.graphics.setColor(255, 255, 255)
     love.graphics.circle("fill", ball.x, ball.y, ball.radius, 20)
-
-    if ball.previousX1 and ball.previousY1 then
-      love.graphics.setColor(255, 255, 255, 70)
-      love.graphics.circle("fill", ball.previousX1, ball.previousY1, ball.radius, 20)
-    end
-    if ball.previousX2 and ball.previousY2 then
-      love.graphics.setColor(255, 255, 255, 40)
-      love.graphics.circle("fill", ball.previousX2, ball.previousY2, ball.radius, 20)
-    end
-    if ball.previousX3 and ball.previousY3 then
-      love.graphics.setColor(255, 255, 255, 10)
-      love.graphics.circle("fill", ball.previousX3, ball.previousY3, ball.radius, 20)
-    end
   end
 
   love.graphics.setColor(255, 255, 255)
