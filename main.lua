@@ -1,16 +1,5 @@
 function love.load()
-  ball1  = {}
-  ball1.x = 400
-  ball1.y = 300
-  ball1.radius = 20
-  resetBallWithSpeed(ball1)
-
-  ball2  = {}
-  ball2.x = 400
-  ball2.y = 300
-  ball2.radius = 20
-  resetBallWithSpeed(ball2)
-  balls = { ball1, ball2 }
+  balls = { createBallWithSpeed(), createBallWithSpeed() }
 
   paddleLeft = {}
   paddleLeft.x = 0
@@ -169,4 +158,13 @@ function resetBallWithoutSpeed(ball)
   ball.y = 300
   ball.xSpeed = 0
   ball.ySpeed = 0
+end
+
+function createBallWithSpeed()
+  ball  = {}
+  ball.x = 400
+  ball.y = 300
+  ball.radius = 20
+  resetBallWithSpeed(ball)
+  return ball
 end
