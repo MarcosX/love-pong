@@ -100,16 +100,15 @@ function love.draw()
     love.graphics.circle("fill", ball.x, ball.y, ball.radius, 20)
   end
 
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(255 - paddleLeft.ballHitCount * 20, 255, 255 - paddleRight.ballHitCount * 20)
   love.graphics.rectangle("fill", paddleLeft.x, paddleLeft.y, paddleLeft.width, paddleLeft.height)
 
+  love.graphics.setColor(255 - paddleRight.ballHitCount * 20, 255, 255 - paddleRight.ballHitCount * 20)
   love.graphics.rectangle("fill", paddleRight.x, paddleRight.y, paddleRight.width, paddleRight.height)
 
+  love.graphics.setColor(255, 255, 255)
   love.graphics.print(meta.scoreRight, 760, 10)
   love.graphics.print(meta.scoreLeft, 40, 10)
-
---  love.graphics.print(paddleLeft.ballHitCount, paddleLeft.x + paddleLeft.width + 10, paddleLeft.y)
---  love.graphics.print(paddleRight.ballHitCount, paddleRight.x - paddleRight.width + 10, paddleRight.y)
 
   if (meta.winner) then
     love.graphics.print(meta.winner, 350, 100)
@@ -138,7 +137,10 @@ function resetGame(meta)
   meta.scoreRight = 0
 
   paddleLeft.height = meta.initialPaddleHeight
+  paddleLeft.ballHitCount = 0
+
   paddleRight.height = meta.initialPaddleHeight
+  paddleRight.ballHitCount = 0
 end
 
 function checkCollision(ball, paddle)
