@@ -5,8 +5,10 @@ function love.load()
   meta.scoreRight = 0
   meta.scoreLeft = 0
   meta.winScore = 5
+  meta.initialPaddleSpeed = 150
   meta.initialPaddleHeight = 100
-  meta.goalHeightPenalty = 10
+  meta.goalHeightPenalty = 2
+  meta.goalSpeedPenalty = 10
   meta.hitHeightBonus = 5
 
   paddleLeft = {}
@@ -29,17 +31,19 @@ end
 function love.update(dt)
   for i, ball in pairs(balls) do
     if (ball.x - ball.radius <= 0) then
-      resetBallWithSpeed(ball)
       meta.scoreRight = meta.scoreRight + 1
-      paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty
+      paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty * ball.hitCount
       paddleLeft.ballHitCount = 0
+      paddleLeft.ySpeed = meta.initialPaddleSpeed
+      resetBallWithSpeed(ball)
     end
 
     if (ball.x + ball.radius >= love.graphics.getWidth()) then
-      resetBallWithSpeed(ball)
       meta.scoreLeft = meta.scoreLeft + 1
-      paddleRight.height = paddleRight.height - meta.goalHeightPenalty
+      paddleRight.height = paddleRight.height - meta.goalHeightPenalty * ball.hitCount
       paddleRight.ballHitCount = 0
+      paddleRight.ySpeed = meta.initialPaddleSpeed
+      resetBallWithSpeed(ball)
     end
 
     if (meta.scoreRight >= meta.winScore) then
@@ -63,12 +67,14 @@ function love.update(dt)
     if (checkCollision(ball, paddleRight)) then
       ball.xSpeed = ball.xSpeed * -1.1
       paddleRight.height = paddleRight.height + meta.hitHeightBonus
+      paddleRight.ySpeed = paddleRight.ySpeed - meta.goalSpeedPenalty
       paddleRight.ballHitCount = paddleRight.ballHitCount + 1
       ball.hitCount = ball.hitCount + 1
     end
     if (checkCollision(ball, paddleLeft)) then
       ball.xSpeed = ball.xSpeed * -1.1
       paddleLeft.height = paddleLeft.height + meta.hitHeightBonus
+      paddleLeft.ySpeed = paddleLeft.ySpeed - meta.goalSpeedPenalty
       paddleLeft.ballHitCount = paddleLeft.ballHitCount + 1
       ball.hitCount = ball.hitCount + 1
     end
@@ -100,7 +106,7 @@ function love.draw()
     love.graphics.circle("fill", ball.x, ball.y, ball.radius, 20)
   end
 
-  love.graphics.setColor(255 - paddleLeft.ballHitCount * 20, 255, 255 - paddleRight.ballHitCount * 20)
+  love.graphics.setColor(255 - paddleLeft.ballHitCount * 20, 255, 255 - paddleLeft.ballHitCount * 20)
   love.graphics.rectangle("fill", paddleLeft.x, paddleLeft.y, paddleLeft.width, paddleLeft.height)
 
   love.graphics.setColor(255 - paddleRight.ballHitCount * 20, 255, 255 - paddleRight.ballHitCount * 20)
@@ -138,9 +144,11 @@ function resetGame(meta)
 
   paddleLeft.height = meta.initialPaddleHeight
   paddleLeft.ballHitCount = 0
+  paddleLeft.ySpeed = meta.initialPaddleSpeed
 
   paddleRight.height = meta.initialPaddleHeight
   paddleRight.ballHitCount = 0
+  paddleRight.ySpeed = meta.initialPaddleSpeed
 end
 
 function checkCollision(ball, paddle)
