@@ -150,9 +150,9 @@ function resetGame(meta)
 end
 
 function checkCollision(ball, paddle)
-  verticalCollision = ((ball.y - ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height) or
+  local verticalCollision = ((ball.y - ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height) or
                         ((ball.y + ball.radius) > paddle.y and (ball.y + ball.radius) < paddle.y + paddle.height)
-  horizontalCollision = ((ball.x - ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width) or
+  local horizontalCollision = ((ball.x - ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width) or
                         ((ball.x + ball.radius) > paddle.x and (ball.x + ball.radius) < paddle.x + paddle.width)
   return verticalCollision and horizontalCollision
 end
