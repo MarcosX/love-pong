@@ -1,6 +1,4 @@
 function love.load()
-  balls = { createBallWithSpeed(), createBallWithSpeed() }
-
   meta = {}
   meta.scoreRight = 0
   meta.scoreLeft = 0
@@ -10,6 +8,12 @@ function love.load()
   meta.goalHeightPenalty = 2
   meta.goalSpeedPenalty = 10
   meta.hitHeightBonus = 5
+  meta.maxBalls = 2
+
+  balls = {}
+  for i = 1, meta.maxBalls do
+    table.insert(balls, createBallWithSpeed())
+  end
 
   paddleLeft = {}
   paddleLeft.x = 0
