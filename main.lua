@@ -74,18 +74,10 @@ function love.update(dt)
     end
 
     if (checkCollision(ball, paddleRight)) then
-      ball.xSpeed = ball.xSpeed * -1.1
-      paddleRight.height = paddleRight.height + meta.hitHeightBonus
-      paddleRight.ySpeed = paddleRight.ySpeed - meta.goalSpeedPenalty
-      paddleRight.ballHitCount = paddleRight.ballHitCount + 1
-      ball.hitCount = ball.hitCount + 1
+      ballDeflected(paddleRight, ball)
     end
     if (checkCollision(ball, paddleLeft)) then
-      ball.xSpeed = ball.xSpeed * -1.1
-      paddleLeft.height = paddleLeft.height + meta.hitHeightBonus
-      paddleLeft.ySpeed = paddleLeft.ySpeed - meta.goalSpeedPenalty
-      paddleLeft.ballHitCount = paddleLeft.ballHitCount + 1
-      ball.hitCount = ball.hitCount + 1
+      ballDeflected(paddleLeft, ball)
     end
 
     ball.x = ball.x + ball.xSpeed*dt
@@ -211,4 +203,12 @@ function goalScoredAgainst(paddle, ball)
   paddle.height = paddle.height - meta.goalHeightPenalty * ball.hitCount
   paddle.ballHitCount = 0
   paddle.ySpeed = meta.initialPaddleSpeed
+end
+
+function ballDeflected(paddle, ball)
+  ball.xSpeed = ball.xSpeed * -1.1
+  paddle.height = paddle.height + meta.hitHeightBonus
+  paddle.ySpeed = paddle.ySpeed - meta.goalSpeedPenalty
+  paddle.ballHitCount = paddle.ballHitCount + 1
+  ball.hitCount = ball.hitCount + 1
 end
