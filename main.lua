@@ -64,24 +64,23 @@ function love.update(dt)
       resetBallWithoutSpeed(ball)
     end
 
-    if (ball.y - ball.radius <= 0) then
+    if ((ball.y - ball.radius <= 0) or
+      (ball.y + ball.radius >= love.graphics.getHeight())) then
       ball.ySpeed = ball.ySpeed * -1.1
       ball.hitCount = ball.hitCount + 1
-    end
-    if (ball.y + ball.radius >= love.graphics.getHeight()) then
-      ball.ySpeed = ball.ySpeed * -1.1
-      ball.hitCount = ball.hitCount + 1
-    end
-
-    if (checkCollision(ball, paddleRight)) then
-      ballDeflected(paddleRight, ball)
-    end
-    if (checkCollision(ball, paddleLeft)) then
-      ballDeflected(paddleLeft, ball)
     end
 
     ball.x = ball.x + ball.xSpeed*dt
     ball.y = ball.y + ball.ySpeed*dt
+
+    if (checkCollision(ball, paddleRight)) then
+      ball.x = paddleRight.x - paddleRight.width
+      ballDeflected(paddleRight, ball)
+    end
+    if (checkCollision(ball, paddleLeft)) then
+      ball.x = paddleLeft.x + paddleLeft.width + ball.radius
+      ballDeflected(paddleLeft, ball)
+    end
   end
 
   if (love.keyboard.isDown("w")) then
@@ -157,9 +156,9 @@ end
 
 function checkCollision(ball, paddle)
   verticalCollision = ((ball.y - ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height) or
-                        ((ball.y + ball.radius) > paddle.y and (ball.y - ball.radius) < paddle.y + paddle.height)
+                        ((ball.y + ball.radius) > paddle.y and (ball.y + ball.radius) < paddle.y + paddle.height)
   horizontalCollision = ((ball.x - ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width) or
-                        ((ball.x + ball.radius) > paddle.x and (ball.x - ball.radius) < paddle.x + paddle.width)
+                        ((ball.x + ball.radius) > paddle.x and (ball.x + ball.radius) < paddle.x + paddle.width)
   return verticalCollision and horizontalCollision
 end
 
