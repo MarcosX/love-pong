@@ -39,9 +39,7 @@ function love.update(dt)
   local currentTime = love.timer.getTime()
   local timeDelta = math.floor(currentTime - initialTime)
 
-  if (table.getn(balls) < meta.maxBalls and
-    (timeDelta%meta.ballCreationDelay) == 0 and
-    table.getn(balls) <= (timeDelta/meta.ballCreationDelay)) then
+  if (shouldAddNewBall(delta)) then
     table.insert(balls, createBallWithSpeed())
   end
 
@@ -204,4 +202,10 @@ end
 function ballHitWalls(ball)
   return (ball.y - ball.radius <= 0) or
       (ball.y + ball.radius >= love.graphics.getHeight())
+end
+
+function shouldAddNewBall(delta)
+  return table.getn(balls) < meta.maxBalls and
+    (timeDelta%meta.ballCreationDelay) == 0 and
+    table.getn(balls) <= (timeDelta/meta.ballCreationDelay)
 end
