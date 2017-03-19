@@ -130,13 +130,8 @@ function love.keyreleased(key)
     love.event.quit()
   end
 
-  if key == "return" then
-    if meta.winner then
-      resetGame(meta)
-      for i, ball in pairs(balls) do
-        resetBallWithSpeed(ball)
-      end
-    end
+  if key == "return" and meta.winner then
+    resetGame(meta)
   end
 end
 
