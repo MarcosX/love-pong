@@ -1,4 +1,7 @@
 function love.load()
+  initialTime = love.timer.getTime()
+  timeDelta = 0
+
   meta = {}
   meta.scoreRight = 0
   meta.scoreLeft = 0
@@ -8,12 +11,11 @@ function love.load()
   meta.goalHeightPenalty = 2
   meta.goalSpeedPenalty = 10
   meta.hitHeightBonus = 5
-  meta.maxBalls = 2
+  meta.maxBalls = 3
+  meta.ballCreationDelay = 2
 
   balls = {}
-  for i = 1, meta.maxBalls do
-    table.insert(balls, createBallWithSpeed())
-  end
+  table.insert(balls, createBallWithSpeed())
 
   paddleLeft = {}
   paddleLeft.x = 0
@@ -33,13 +35,20 @@ function love.load()
 end
 
 function love.update(dt)
+  local currentTime = love.timer.getTime()
+  timeDelta = math.floor(currentTime - initialTime)
+
+  if (table.getn(balls) < meta.maxBalls and (timeDelta%meta.ballCreationDelay) == 0 and table.getn(balls) <= (timeDelta/meta.ballCreationDelay)) then
+    table.insert(balls, createBallWithSpeed())
+  end
+
   for i, ball in pairs(balls) do
     if (ball.x - ball.radius <= 0) then
       meta.scoreRight = meta.scoreRight + 1
       paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty * ball.hitCount
       paddleLeft.ballHitCount = 0
       paddleLeft.ySpeed = meta.initialPaddleSpeed
-      resetBallWithSpeed(ball)
+      table.remove(balls, i)
     end
 
     if (ball.x + ball.radius >= love.graphics.getWidth()) then
@@ -47,7 +56,7 @@ function love.update(dt)
       paddleRight.height = paddleRight.height - meta.goalHeightPenalty * ball.hitCount
       paddleRight.ballHitCount = 0
       paddleRight.ySpeed = meta.initialPaddleSpeed
-      resetBallWithSpeed(ball)
+      table.remove(balls, i)
     end
 
     if (meta.scoreRight >= meta.winScore) then
@@ -153,6 +162,9 @@ function resetGame(meta)
   paddleRight.height = meta.initialPaddleHeight
   paddleRight.ballHitCount = 0
   paddleRight.ySpeed = meta.initialPaddleSpeed
+
+  balls = {createBallWithSpeed()}
+  initialTime = love.timer.getTime()
 end
 
 function checkCollision(ball, paddle)
