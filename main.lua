@@ -67,8 +67,7 @@ function love.update(dt)
       resetBallWithoutSpeed(ball)
     end
 
-    if ((ball.y - ball.radius <= 0) or
-      (ball.y + ball.radius >= love.graphics.getHeight())) then
+    if (ballHitWalls(ball)) then
       ball.ySpeed = ball.ySpeed * -1.1
       ball.hitCount = ball.hitCount + 1
     end
@@ -200,4 +199,9 @@ function ballDeflected(paddle, ball)
   paddle.ySpeed = paddle.ySpeed - meta.goalSpeedPenalty
   paddle.ballHitCount = paddle.ballHitCount + 1
   ball.hitCount = ball.hitCount + 1
+end
+
+function ballHitWalls(ball)
+  return (ball.y - ball.radius <= 0) or
+      (ball.y + ball.radius >= love.graphics.getHeight())
 end
