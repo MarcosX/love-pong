@@ -45,17 +45,13 @@ function love.update(dt)
   for i, ball in pairs(balls) do
     if (ball.x - ball.radius <= 0) then
       meta.scoreRight = meta.scoreRight + 1
-      paddleLeft.height = paddleLeft.height - meta.goalHeightPenalty * ball.hitCount
-      paddleLeft.ballHitCount = 0
-      paddleLeft.ySpeed = meta.initialPaddleSpeed
+      goalScoredAgainst(paddleLeft, ball)
       table.remove(balls, i)
     end
 
     if (ball.x + ball.radius >= love.graphics.getWidth()) then
       meta.scoreLeft = meta.scoreLeft + 1
-      paddleRight.height = paddleRight.height - meta.goalHeightPenalty * ball.hitCount
-      paddleRight.ballHitCount = 0
-      paddleRight.ySpeed = meta.initialPaddleSpeed
+      goalScoredAgainst(paddleRight, ball)
       table.remove(balls, i)
     end
 
@@ -209,4 +205,10 @@ function createBallWithSpeed()
   ball.hitCount = 0
   resetBallWithSpeed(ball)
   return ball
+end
+
+function goalScoredAgainst(paddle, ball)
+  paddle.height = paddle.height - meta.goalHeightPenalty * ball.hitCount
+  paddle.ballHitCount = 0
+  paddle.ySpeed = meta.initialPaddleSpeed
 end
