@@ -13,6 +13,7 @@ function love.load()
   meta.maxBalls = 3
   meta.ballCreationDelay = 2
   meta.initalBallSpeed = 90
+  meta.ballSpawLocationVariation = 50
 
   balls = {}
   table.insert(balls, createBallWithSpeed())
@@ -72,9 +73,6 @@ function love.update(dt)
       ball.hitCount = ball.hitCount + 1
     end
 
-    ball.x = ball.x + ball.xSpeed*dt
-    ball.y = ball.y + ball.ySpeed*dt
-
     if (checkCollision(ball, paddleRight)) then
       ball.x = paddleRight.x - paddleRight.width
       ballDeflected(paddleRight, ball)
@@ -83,6 +81,9 @@ function love.update(dt)
       ball.x = paddleLeft.x + paddleLeft.width + ball.radius
       ballDeflected(paddleLeft, ball)
     end
+
+    ball.x = ball.x + ball.xSpeed*dt
+    ball.y = ball.y + ball.ySpeed*dt
   end
 
   if (love.keyboard.isDown("w")) then
@@ -166,20 +167,12 @@ end
 
 function resetBallWithSpeed(ball)
   ball.hitCount = 0
-  ball.x = 375 + love.math.random(50)
-  ball.y = 275 + love.math.random(50)
+  ball.x = (love.graphics.getWidth()/2 - meta.ballSpawLocationVariation) + love.math.random(meta.ballSpawLocationVariation*2)
+  ball.y = (love.graphics.getHeight()/2 - meta.ballSpawLocationVariation) + love.math.random(meta.ballSpawLocationVariation*2)
 
-  if love.math.random(10)%2 == 0 then
-    ball.xSpeed = meta.initalBallSpeed
-  else
-    ball.xSpeed = -meta.initalBallSpeed
-  end
-
-  if love.math.random(10)%2 == 0 then
-    ball.ySpeed = meta.initalBallSpeed
-  else
-    ball.ySpeed = -meta.initalBallSpeed
-  end
+  local speeds = {90, -90}
+  ball.xSpeed = speeds[love.math.random(2)]
+  ball.ySpeed = speeds[love.math.random(2)]
 end
 
 function resetBallWithoutSpeed(ball)
