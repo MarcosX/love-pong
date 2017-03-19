@@ -1,6 +1,5 @@
 function love.load()
   initialTime = love.timer.getTime()
-  timeDelta = 0
 
   meta = {}
   meta.scoreRight = 0
@@ -13,6 +12,7 @@ function love.load()
   meta.hitHeightBonus = 5
   meta.maxBalls = 3
   meta.ballCreationDelay = 2
+  meta.initalBallSpeed = 90
 
   balls = {}
   table.insert(balls, createBallWithSpeed())
@@ -36,9 +36,11 @@ end
 
 function love.update(dt)
   local currentTime = love.timer.getTime()
-  timeDelta = math.floor(currentTime - initialTime)
+  local timeDelta = math.floor(currentTime - initialTime)
 
-  if (table.getn(balls) < meta.maxBalls and (timeDelta%meta.ballCreationDelay) == 0 and table.getn(balls) <= (timeDelta/meta.ballCreationDelay)) then
+  if (table.getn(balls) < meta.maxBalls and
+    (timeDelta%meta.ballCreationDelay) == 0 and
+    table.getn(balls) <= (timeDelta/meta.ballCreationDelay)) then
     table.insert(balls, createBallWithSpeed())
   end
 
@@ -168,15 +170,15 @@ function resetBallWithSpeed(ball)
   ball.y = 275 + love.math.random(50)
 
   if love.math.random(10)%2 == 0 then
-    ball.xSpeed = 90
+    ball.xSpeed = meta.initalBallSpeed
   else
-    ball.xSpeed = -90
+    ball.xSpeed = -meta.initalBallSpeed
   end
 
   if love.math.random(10)%2 == 0 then
-    ball.ySpeed = 90
+    ball.ySpeed = meta.initalBallSpeed
   else
-    ball.ySpeed = -90
+    ball.ySpeed = -meta.initalBallSpeed
   end
 end
 
