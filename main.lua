@@ -5,11 +5,11 @@ function love.load()
   meta.scoreRight = 0
   meta.scoreLeft = 0
   meta.winScore = 5
-  meta.initialPaddleSpeed = 150
-  meta.initialPaddleHeight = 100
-  meta.goalHeightPenalty = 2
-  meta.goalSpeedPenalty = 10
-  meta.hitHeightBonus = 5
+  meta.initialPaddleSpeed = 200
+  meta.goalSpeedPenalty = meta.initialPaddleSpeed*0.1
+  meta.initialPaddleHeight = 120
+  meta.goalHeightPenalty = meta.initialPaddleHeight*0.05
+  meta.hitHeightBonus = meta.initialPaddleHeight*0.1
   meta.maxBalls = 3
   meta.ballCreationDelay = 2
   meta.initalBallSpeed = 90
@@ -190,8 +190,12 @@ end
 
 function ballDeflected(paddle, ball)
   ball.xSpeed = ball.xSpeed * -1.1
-  paddle.height = paddle.height + meta.hitHeightBonus
-  paddle.ySpeed = paddle.ySpeed - meta.goalSpeedPenalty
+  if (paddle.height < meta.initialPaddleHeight*1.5) then
+    paddle.height = paddle.height + meta.hitHeightBonus
+  end
+  if (paddle.ySpeed > meta.initialPaddleSpeed/5) then
+    paddle.ySpeed = paddle.ySpeed - meta.goalSpeedPenalty
+  end
   paddle.ballHitCount = paddle.ballHitCount + 1
   ball.hitCount = ball.hitCount + 1
 end
